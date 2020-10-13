@@ -36,6 +36,12 @@ class RobotState:
 
         # begin homework 2 : problem 2
         # check probabilities are correct
+        if self.prob_move_left_if_left + self.prob_move_right_if_left == 1: 
+            print("true")
+            return True
+        else:
+            self.prob_move_left_if_left = 1 - move_left_if_left
+            return False
         # end homework 2 : problem 2
 
     # Make sure probabilities add up to one
@@ -45,6 +51,11 @@ class RobotState:
 
         # begin homework 2 : problem 2
         # check probabilities are correct
+        if (self.prob_move_left_if_right + self.prob_move_right_if_right) == 1: 
+            return True
+        else:
+            self.prob_move_left_if_right = 1 - move_right_if_right
+            return False
         # end homework 2 : problem 2
 
     # Just a helper function to place robot + sign in middle of bin
@@ -75,6 +86,7 @@ class RobotState:
         # begin homework 2 : problem 2
         # begin homework 2 : problem 2
         # Flip the coin...
+
         # Determine whether to move left, right, or stay put
         # end homework 2 : problem 2
         return self._move_(step_size)

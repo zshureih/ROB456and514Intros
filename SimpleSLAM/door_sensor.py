@@ -18,6 +18,8 @@ class DoorSensor:
     def __init__(self):
         self.prob_see_door_if_door = 0.8
         self.prob_see_door_if_no_door = 0.2
+        self.prob_not_see_door_if_door = 1 - self.prob_see_door_if_door
+        self.prob_not_see_door_if_no_door = 1 - self.prob_see_door_if_no_door
 
     # ground truth
     @staticmethod
@@ -41,8 +43,42 @@ class DoorSensor:
         """
         # begin homework 2 : problem 1
         # Flip the coin...
+        coin = np.random.uniform(0, 1)
+        sensor_reading = 0
+        # print(coin)
+        if coin < self.prob_see_door_if_no_door:
+            sensor_reading = 0 
+        else:
+            sensor_reading = 1
+        ground_truth = self.is_in_front_of_door(ws, rs)
+        # print(sensor_reading)
+        # print(ground_truth)
+
         # Determine percentage in front of door
+        # prob(truth | sensor) = p(sensor | truth) * p(truth) / (p(sensor | truth) * p(truth) + p(sensor | ~truth) * p(~truth))
+        pst = 0  # prob(sensor | truth)
+        not_pst = 0
+        if ground_truth and sensor_reading: 
+            pst = self.prob_see_door_if_door  # P(z|door)
+            not_pst = self.prob_see_door_if_no_door #P(z|~door)
+        if ground_truth and not sensor_reading: 
+            pst = self.prob_not_see_door_if_door #P(~z|door) 
+            not_pst = self.prob_not_see_door_if_no_door #P(~z|~door)
+        if not ground_truth and sensor_reading:
+            pst = self.prob_see_door_if_no_door #P(z|~door)
+            not_pst = self.prob_not_see_door_if_no_door #P(~z|~door)
+        if not ground_truth and not sensor_reading: 
+            pst = self.prob_not_see_door_if_no_door  # p(~z|~door)
+            not_pst = self.prob_not_see_door_if_door # p(~z|door)
+
+        p_truth = (len(ws.doors) * ws.door_width) / ws.n_bins  # probability that there is a door
+        not_p_truth = 1 - p_truth
+        prob = (pst * p_truth) / ((pst * p_truth) + (not_pst * not_p_truth))
+        n_prob = 1 - prob
+        print(prob)
+        print(n_prob)
         # end homework 2 : problem 1
+
         return True
 
     # set the probabilities based on the gui

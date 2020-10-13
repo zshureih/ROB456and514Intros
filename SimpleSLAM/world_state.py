@@ -10,6 +10,7 @@ class WorldState:
         # Door configurations
         self.door_width = 1
         self.doors = []
+        self.n_bins = 0
 
         self.random_door_placement()
 
@@ -18,6 +19,7 @@ class WorldState:
 
     def random_door_placement(self, n_doors=3, n_bins=20):
         """ Randomly place the doors """
+        self.n_bins = n_bins
 
         div = 1 / n_bins
         door_loc = np.zeros(int(n_bins))
